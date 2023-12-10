@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Asset breakdown notification reporting</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" /> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url("images/background.jpg");
+        }
+        .card {
+            margin-top: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <%- include('partials/nav') %> 
+    </div>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h3>Create Work Request</h3>
+                <!-- Success Message -->
+                <% if (typeof success !== 'undefined') { %>
+                    <div id="successMessage" class="alert alert-success">
+                        <%= success %>
+                    </div>
+                <% } %>
+
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control" id="description" placeholder="Enter description of work request" name="description">
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority of Request</label>
+                        <select class="form-control" id="priority" name="priority">
+                            <option value="">Select priority</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatically hide the success message after 5 seconds
+        <% if (typeof success !== 'undefined') { %>
+            setTimeout(function() {
+                var successMessageDiv = document.getElementById('successMessage');
+                if (successMessageDiv) {
+                    successMessageDiv.style.display = 'none';
+                }
+            }, 100);
+        <% } %>
+    </script>
+</body>
+</html>

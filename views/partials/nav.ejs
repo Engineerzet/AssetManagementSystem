@@ -1,0 +1,18 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href='/'>Home</a></li>
+    <% if (user && user.role === 'User' || user.role === 'Admin' || user.role === 'Manager') { %>
+    <li><a href="addnotifications">Create Work Request</a></li>
+    <% } %>
+    <li><a href="getnotifications">List Work Requests</a></li>
+    <li><a href="equipment">Equipment list</a></li>
+    <!-- In nav.ejs -->
+<% if (user && (user.role === 'Admin' || user.role === 'Manager')) { %>
+    <li><a href="register">Register User</a></li>
+    <li><a href="workorders">Work Orders</a></li>
+<% } %>
+<% if (user && user.role === 'Technician') { %>
+    <li><a href="/assignedWorkOrders">My Work Orders</a></li>
+<% } %>
+
+<li><a href="/logout">Logout</a></li>
+</ul>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<head>
+	<title>Notifications</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<link href= "/stylesheets/style.css" rel="stylesheet" type="text/css" /> 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	
+
+</head>
+<body>
+	<div class="container">
+		<%- include('partials/nav') %> 
+	</div>
+	<div id="divGet">
+	
+	<table id="notificationsList">
+		<tr>
+			<th>Description</th>
+			<th>Created_by</th>
+			
+		</tr>
+		
+		<% if (notificationData.length !=0) {var i=1; notificationData.forEach( function(data) {
+		%>
+		<tr>
+			<td><%=data.description %></td>
+			<td><%=data.created_by %></td>
+			<% if (user && (user.role === 'Admin' || user.role === 'Manager')) { %>
+			<td> <button class="create-work-order-btn" data-notification-id="<%= data.id %>">Create Work Order</button></td>
+		    <% } %>
+		</tr>
+		<% i++; }) %> <%}%>
+		
+	</table>
+   
+
+	<div id="workOrderForm" style="display: none;">
+		  <!-- Success Message -->
+		  
+			<div id="successMessage">
+			</div>
+	
+
+		<form id="workOrderCreationForm">
+			<input type="hidden" id="notificationId" name="notificationId" value="">
+			<!-- Other form fields for work order details -->
+			<input type="text" name="description" placeholder="Description">
+			<input type="number" name="plannedHours" placeholder="Planned Hours">
+			<!-- Place this dropdown in your form -->
+			<select name="assignedPersonnel" id="assignedPersonnelDropdown">
+				<option value="">Select Personnel</option>
+				<!-- Options will be added dynamically here -->
+			</select>
+
+			<input type="date" name="dateScheduled" placeholder="Date Scheduled">
+			<select name="status">
+				<option value="Pending">Pending</option>
+				<option value="InProgress">In Progress</option>
+				<option value="Completed">Completed</option>
+			</select>
+			<button type="submit">Save Work Order</button>
+		</form>
+	</div>
+	
+	</div>
+
+	<script>
+		document.querySelectorAll('.create-work-order-btn').forEach(button => {
+			button.addEventListener('click', function() {
+				document.getElementById('notificationId').value = this.dataset.notificationId;
+				document.getElementById('workOrderForm').style.display = 'block';
+				document.getElementById('notificationsList').style.display = 'none';
+			});
+		});
+	</script>
+
+<script>
+  document.getElementById('workOrderCreationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+	for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+}
+
+
+    fetch('/create-work-order', {
+        method: 'POST',
+        body: formData // FormData will set the correct Content-Type header
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data); // Success message
+        document.getElementById('successMessage').textContent = data.message;
+    })
+    .catch(error => console.error('Fetch error:', error));
+});
+
+
+// JavaScript to fetch personnel and populate the dropdown
+window.onload = function() {
+    fetch('/fetch-personnel')
+        .then(response => response.json())
+        .then(data => {
+            const dropdown = document.getElementById('assignedPersonnelDropdown');
+            data.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id; // Assuming you want to send the user's ID
+                option.textContent = user.username; // The text to show in the dropdown
+				//option.textContent = user.email;
+                dropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching personnel:', error));
+};
+
+
+</script>
+
+</body>
+</html>

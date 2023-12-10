@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<head>
+	<title>Equipment</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<link href= "/stylesheets/style.css" rel="stylesheet" type="text/css" /> 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  	
+
+</head>
+<body>
+	<div class="container">
+        <%- include('partials/nav') %> 
+	</div>
+	<div id="divGet">
+
+        
+    
+        <form action="/register" method="post">
+            <div class="form-group">
+                <% if (typeof success !== 'undefined') { %>
+                    <div id="successMessage" class="alert alert-success">
+                        <%= success %>
+                    </div>
+                <% } %>
+                
+        <h2 class="text-center">Register New User</h2>
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+             <label for="email">User Role</label>
+            <select name="role">
+                <option value="User">User</option>
+                <option value="Manager">Manager</option>
+                <option value="Admin">Admin</option>
+                <option value="Technician">Technician</option>
+            </select>
+        </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+    </div>
+
+    <script>
+        // Automatically hide the success message after 5 seconds
+        <% if (typeof success !== 'undefined') { %>
+            setTimeout(function() {
+                var successMessageDiv = document.getElementById('successMessage');
+                if (successMessageDiv) {
+                    successMessageDiv.style.display = 'none';
+                }
+            }, 5000);
+        <% } %>
+    </script>
+</body>
+</html>
+
+     

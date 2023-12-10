@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<head>
+	<title>Workorders</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<link href= "/stylesheets/style.css" rel="stylesheet" type="text/css" /> 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  	
+
+</head>
+<body>
+	<div class="container">
+        <%- include('partials/nav') %> 
+	</div>
+	<div id="divGet">
+        		
+	<table>
+		<tr>
+			<th>Description</th>
+			<th>planned Hours</th>
+		    <th>Assigned Personnel</th>
+		    <th>Date Scheduled</th>	
+            <th>Status</th>	
+            <th>Change Status</th>	
+		</tr>
+		
+		<% if (workOrdersData.length !=0) {var i=1; workOrdersData.forEach( function(data) {
+		%>
+		<tr>
+			<td><%=data.description %></td>
+			<td><%=data.planned_hours %></td>
+			<td><%=data.assignedUsername %></td>
+			<td><%= new Date(data.date_scheduled).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) %></td>
+            <td><%=data.status %></td>
+            <% if (user && (user.role === 'Admin' || user.role === 'Manager')) { %>
+            <td>
+                <div class="btn btn-primary" hidden id="successMessage">
+                </div>
+                <select onchange="updateStatus('<%= data.id %>', this.value)">
+                    <option value="Pending" <% if(data.status === 'Pending') { %>selected<% } %>>Pending</option>
+                    <option value="InProgress" <% if(data.status === 'InProgress') { %>selected<% } %>>In Progress</option>
+                    <option value="Completed" <% if(data.status === 'Completed') { %>selected<% } %>>Completed</option>
+                </select>
+            </td>
+            <% } %>
+		</tr>
+		<% i++; }) %> <%}%>
+		
+	</table>
+	</div>
+
+<script>
+    function updateStatus(workOrderId, newStatus) {
+        fetch('/update-work-order-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: workOrderId, status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Status updated successfully');
+            console.log(data); // Success message
+            document.getElementById('successMessage').removeAttribute('hidden');
+        document.getElementById('successMessage').textContent = data.message;
+      
+        })
+        .catch(error => console.error('Error updating status:', error));
+    }
+    
+</script>
+</body>
+</html>
